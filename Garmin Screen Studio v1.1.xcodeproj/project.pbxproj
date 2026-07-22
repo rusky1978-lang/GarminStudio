@@ -6,8 +6,37 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CE1917423002E9E8007E909E /* DownloadRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1917373002E9E8007E909E /* DownloadRunner.swift */; };
+		CE1917453002E9E8007E909E /* GarminDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE19173A3002E9E8007E909E /* GarminDownloader.swift */; };
+		CECB132E300F290A00096CA4 /* libusb-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */; };
+		CECB1330300F292000096CA4 /* libmtp.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB132F300F292000096CA4 /* libmtp.9.dylib */; };
+		CECB1331300F2F8500096CA4 /* libusb-1.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		CECB1334300F301500096CA4 /* libmtp.9.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CECB1333300F301500096CA4 /* libmtp.9.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CECB1326300F1FE700096CA4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CECB1334300F301500096CA4 /* libmtp.9.dylib in CopyFiles */,
+				CECB1331300F2F8500096CA4 /* libusb-1.0.0.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		CE19055E2FFE1E4E00FC1701 /* GarminScreenStudio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GarminScreenStudio-Bridging-Header.h"; sourceTree = "<group>"; };
+		CE1917373002E9E8007E909E /* DownloadRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadRunner.swift; sourceTree = "<group>"; };
+		CE19173A3002E9E8007E909E /* GarminDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarminDownloader.swift; sourceTree = "<group>"; };
 		CE63FE262FFCB07900508C3D /* Garmin Screen Studio v1.1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Garmin Screen Studio v1.1.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libusb-1.0.0.dylib"; path = "Frameworks/libusb-1.0.0.dylib"; sourceTree = "<group>"; };
+		CECB132F300F292000096CA4 /* libmtp.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmtp.9.dylib; path = /Users/russellgosling/Desktop/GarminLibs/libmtp.9.dylib; sourceTree = "<absolute>"; };
+		CECB1333300F301500096CA4 /* libmtp.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmtp.9.dylib; path = Frameworks/libmtp.9.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,16 +52,41 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CECB132E300F290A00096CA4 /* libusb-1.0.0.dylib in Frameworks */,
+				CECB1330300F292000096CA4 /* libmtp.9.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE19055F2FFF5D0400FC1701 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */,
+				CECB132F300F292000096CA4 /* libmtp.9.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CE19174C30040049007E909E /* Legacy */ = {
+			isa = PBXGroup;
+			children = (
+				CE19173A3002E9E8007E909E /* GarminDownloader.swift */,
+				CE1917373002E9E8007E909E /* DownloadRunner.swift */,
+			);
+			path = Legacy;
+			sourceTree = "<group>";
+		};
 		CE63FE1D2FFCB07900508C3D = {
 			isa = PBXGroup;
 			children = (
+				CECB1333300F301500096CA4 /* libmtp.9.dylib */,
+				CECB131C300F1CF300096CA4 /* Frameworks */,
+				CE19055E2FFE1E4E00FC1701 /* GarminScreenStudio-Bridging-Header.h */,
 				CE63FE282FFCB07900508C3D /* Garmin Screen Studio v1.1 */,
+				CE19174C30040049007E909E /* Legacy */,
+				CE19055F2FFF5D0400FC1701 /* Frameworks */,
 				CE63FE272FFCB07900508C3D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -45,6 +99,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		CECB131C300F1CF300096CA4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -55,6 +116,7 @@
 				CE63FE222FFCB07900508C3D /* Sources */,
 				CE63FE232FFCB07900508C3D /* Frameworks */,
 				CE63FE242FFCB07900508C3D /* Resources */,
+				CECB1326300F1FE700096CA4 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -119,6 +181,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE1917423002E9E8007E909E /* DownloadRunner.swift in Sources */,
+				CE1917453002E9E8007E909E /* GarminDownloader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,10 +310,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/opt/libmtp/lib;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -263,20 +327,28 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cyclingwithruss.Garmin-Screen-Studio-v1-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "$(SRCROOT)/GarminScreenStudio-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 26.5;
 			};
 			name = Debug;
@@ -288,10 +360,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/opt/libmtp/lib;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -305,20 +377,29 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Frameworks",
+					"$(PROJECT_DIR)",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cyclingwithruss.Garmin-Screen-Studio-v1-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				"SWIFT_OBJC_BRIDGING_HEADER[arch=*]" = "$(SRCROOT)/GarminScreenStudio-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 26.5;
 			};
 			name = Release;

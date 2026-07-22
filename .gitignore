@@ -1,0 +1,22 @@
+# Xcode user data
+xcuserdata/
+*.xcuserstate
+
+# Breakpoints
+*.xcbkptlist
+
+# macOS
+.DS_Store
+
+# Backup archives
+*.zip
+
+# Legacy folders
+Legacy/
+
+# Temporary project copies
+Garmin Screen Studio v1.1 3/
+
+# Root dylibs
+libmtp*.dylib
+libusb*.dylib

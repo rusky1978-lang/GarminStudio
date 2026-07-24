@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CE1917423002E9E8007E909E /* DownloadRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1917373002E9E8007E909E /* DownloadRunner.swift */; };
-		CE1917453002E9E8007E909E /* GarminDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE19173A3002E9E8007E909E /* GarminDownloader.swift */; };
 		CECB132E300F290A00096CA4 /* libusb-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */; };
 		CECB1330300F292000096CA4 /* libmtp.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB132F300F292000096CA4 /* libmtp.9.dylib */; };
 		CECB1331300F2F8500096CA4 /* libusb-1.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -31,8 +29,6 @@
 
 /* Begin PBXFileReference section */
 		CE19055E2FFE1E4E00FC1701 /* GarminScreenStudio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GarminScreenStudio-Bridging-Header.h"; sourceTree = "<group>"; };
-		CE1917373002E9E8007E909E /* DownloadRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadRunner.swift; sourceTree = "<group>"; };
-		CE19173A3002E9E8007E909E /* GarminDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GarminDownloader.swift; sourceTree = "<group>"; };
 		CE63FE262FFCB07900508C3D /* Garmin Screen Studio v1.1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Garmin Screen Studio v1.1.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libusb-1.0.0.dylib"; path = "Frameworks/libusb-1.0.0.dylib"; sourceTree = "<group>"; };
 		CECB132F300F292000096CA4 /* libmtp.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmtp.9.dylib; path = /Users/russellgosling/Desktop/GarminLibs/libmtp.9.dylib; sourceTree = "<absolute>"; };
@@ -72,8 +68,6 @@
 		CE19174C30040049007E909E /* Legacy */ = {
 			isa = PBXGroup;
 			children = (
-				CE19173A3002E9E8007E909E /* GarminDownloader.swift */,
-				CE1917373002E9E8007E909E /* DownloadRunner.swift */,
 			);
 			path = Legacy;
 			sourceTree = "<group>";
@@ -181,8 +175,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE1917423002E9E8007E909E /* DownloadRunner.swift in Sources */,
-				CE1917453002E9E8007E909E /* GarminDownloader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,6 +304,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=*]" = x86_64;
 				GENERATE_INFOPLIST_FILE = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/opt/libmtp/lib;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -362,6 +355,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=*]" = x86_64;
 				GENERATE_INFOPLIST_FILE = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/opt/libmtp/lib;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;

@@ -4,7 +4,10 @@ class FFmpegRunner {
 
     private let ffmpegPath = "/opt/homebrew/Cellar/ffmpeg/8.1.2_1/bin/ffmpeg"
 
-    func convert(folder: URL, outputFile: URL) {
+    /// Runs ffmpeg and reports back via `completion` once the process has
+    /// actually terminated (success/failure), instead of returning immediately.
+    /// `completion` is always called on the main thread.
+    func convert(folder: URL, outputFile: URL, completion: @escaping (Bool) -> Void) {
 
         let process = Process()
 
@@ -33,17 +36,20 @@ class FFmpegRunner {
             let data = pipe.fileHandleForReading.readDataToEndOfFile()
             let output = String(data: data, encoding: .utf8) ?? ""
 
+            print("========== FFMPEG ==========")
+            print(output)
+            print("============================")
+
+            let success = process.terminationStatus == 0
+
+            if success {
+                print("✅ Video created")
+            } else {
+                print("❌ FFmpeg failed")
+            }
+
             DispatchQueue.main.async {
-
-                print("========== FFMPEG ==========")
-                print(output)
-                print("============================")
-
-                if process.terminationStatus == 0 {
-                    print("✅ Video created")
-                } else {
-                    print("❌ FFmpeg failed")
-                }
+                completion(success)
             }
         }
 
@@ -51,6 +57,10 @@ class FFmpegRunner {
             try process.run()
         } catch {
             print(error)
+            DispatchQueue.main.async {
+                completion(false)
+            }
         }
     }
 }
+

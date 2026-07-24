@@ -170,4 +170,75 @@ class GarminDevice {
         
         LIBMTP_destroy_file_t(files)
     }
+
+    // MARK: - Device info
+
+    func deviceModelName(_ device: UnsafeMutablePointer<LIBMTP_mtpdevice_t>) -> String {
+
+        guard let cName = LIBMTP_Get_Modelname(device) else {
+            return "Garmin Device"
+        }
+
+        let name = String(cString: cName)
+        free(cName)
+        return name.isEmpty ? "Garmin Device" : name
+    }
+
+    func freeStorageGB(_ device: UnsafeMutablePointer<LIBMTP_mtpdevice_t>) -> Double? {
+
+        guard LIBMTP_Get_Storage(device, 0) == 0,
+              let storage = device.pointee.storage else {
+            return nil
+        }
+
+        let freeBytes = storage.pointee.FreeSpaceInBytes
+        return Double(freeBytes) / 1_073_741_824.0
+    }
+
+    // MARK: - Recording Browser
+
+    struct RecordingFolderInfo {
+        let name: String
+        let dateFolderID: UInt32
+        let framesFolderID: UInt32
+    }
+
+    /// Walks the whole folder tree and returns EVERY recording folder found,
+    /// not just the most recent one (unlike `latestRecordingFolder` above).
+    func allRecordingFolders(_ folder: UnsafeMutablePointer<LIBMTP_folder_t>?) -> [RecordingFolderInfo] {
+
+        guard let folder else { return [] }
+
+        var results: [RecordingFolderInfo] = []
+
+        func walk(_ node: UnsafeMutablePointer<LIBMTP_folder_t>?) {
+
+            guard let node else { return }
+
+            var current: UnsafeMutablePointer<LIBMTP_folder_t>? = node
+
+            while let folder = current {
+
+                let name = String(cString: folder.pointee.name)
+
+                if name.hasPrefix("2026-"), let child = folder.pointee.child {
+                    results.append(
+                        RecordingFolderInfo(
+                            name: name,
+                            dateFolderID: folder.pointee.folder_id,
+                            framesFolderID: child.pointee.folder_id
+                        )
+                    )
+                }
+
+                walk(folder.pointee.child)
+
+                current = folder.pointee.sibling
+            }
+        }
+
+        walk(folder)
+
+        return results
+    }
 }

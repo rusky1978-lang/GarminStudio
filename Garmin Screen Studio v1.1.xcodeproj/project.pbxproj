@@ -11,6 +11,7 @@
 		CECB1330300F292000096CA4 /* libmtp.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB132F300F292000096CA4 /* libmtp.9.dylib */; };
 		CECB1331300F2F8500096CA4 /* libusb-1.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CECB1334300F301500096CA4 /* libmtp.9.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CECB1333300F301500096CA4 /* libmtp.9.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		CEE806C230193313006F7495 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = CEE806C130193313006F7495 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEE806C230193313006F7495 /* Sparkle in Frameworks */,
 				CECB132E300F290A00096CA4 /* libusb-1.0.0.dylib in Frameworks */,
 				CECB1330300F292000096CA4 /* libmtp.9.dylib in Frameworks */,
 			);
@@ -121,6 +123,7 @@
 			);
 			name = "Garmin Screen Studio v1.1";
 			packageProductDependencies = (
+				CEE806C130193313006F7495 /* Sparkle */,
 			);
 			productName = "Garmin Screen Studio v1.1";
 			productReference = CE63FE262FFCB07900508C3D /* Garmin Screen Studio v1.1.app */;
@@ -150,6 +153,9 @@
 			);
 			mainGroup = CE63FE1D2FFCB07900508C3D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CEE806C030193313006F7495 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CE63FE272FFCB07900508C3D /* Products */;
 			projectDirPath = "";
@@ -420,6 +426,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CEE806C030193313006F7495 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CEE806C130193313006F7495 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEE806C030193313006F7495 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CE63FE1E2FFCB07900508C3D /* Project object */;
 }

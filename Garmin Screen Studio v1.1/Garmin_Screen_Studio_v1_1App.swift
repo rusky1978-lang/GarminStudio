@@ -1,8 +1,70 @@
 import SwiftUI
 import AppKit
+import Combine
+import Sparkle
+
+final class CheckForUpdatesViewModel: ObservableObject {
+    @Published var canCheckForUpdates: Bool
+
+    init(updater: SPUUpdater, hasUpdateFeed: Bool) {
+        canCheckForUpdates = !hasUpdateFeed || updater.canCheckForUpdates
+
+        guard hasUpdateFeed else {
+            return
+        }
+
+        updater.publisher(for: \.canCheckForUpdates)
+            .assign(to: &$canCheckForUpdates)
+    }
+}
+
+struct CheckForUpdatesView: View {
+    @ObservedObject private var viewModel: CheckForUpdatesViewModel
+    private let updater: SPUUpdater
+    private let hasUpdateFeed: Bool
+
+    init(updater: SPUUpdater, hasUpdateFeed: Bool) {
+        self.updater = updater
+        self.hasUpdateFeed = hasUpdateFeed
+        viewModel = CheckForUpdatesViewModel(updater: updater, hasUpdateFeed: hasUpdateFeed)
+    }
+
+    var body: some View {
+        Button("Check for Updates…") {
+            if hasUpdateFeed {
+                updater.checkForUpdates()
+            } else {
+                NSAlert.noUpdatesAvailable.runModal()
+            }
+        }
+        .disabled(!viewModel.canCheckForUpdates)
+    }
+}
+
+private extension NSAlert {
+    static var noUpdatesAvailable: NSAlert {
+        let alert = NSAlert()
+        alert.messageText = "No Updates Available"
+        alert.informativeText = "Garmin Screen Studio is up to date."
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        return alert
+    }
+}
 
 @main
 struct Garmin_Screen_Studio_v1_1App: App {
+    private let updaterController: SPUStandardUpdaterController
+    private let hasUpdateFeed: Bool
+
+    init() {
+        hasUpdateFeed = Bundle.main.object(forInfoDictionaryKey: "SUFeedURL") != nil
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: hasUpdateFeed,
+            updaterDelegate: nil,
+            userDriverDelegate: nil
+        )
+    }
 
     var body: some Scene {
 
@@ -16,6 +78,13 @@ struct Garmin_Screen_Studio_v1_1App: App {
                 Button("About Garmin Screen Studio") {
                     showAboutPanel()
                 }
+            }
+
+            CommandGroup(after: .appInfo) {
+                CheckForUpdatesView(
+                    updater: updaterController.updater,
+                    hasUpdateFeed: hasUpdateFeed
+                )
             }
         }
 

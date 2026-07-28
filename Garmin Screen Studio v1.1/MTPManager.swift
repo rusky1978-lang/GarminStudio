@@ -46,12 +46,25 @@ class MTPManager: ObservableObject {
     @Published var latestRecordingDate: Date?
     @Published var latestRecordingDimensions = ""
 
+    // Measured capture rate (from real device timestamps, not a guess)
+    @Published var measuredCaptureFPS: Double? = nil
+
     // Conversion state
     @Published var isConverting = false
     @Published var conversionComplete = false
     @Published var outputVideo: URL?
+    @Published var conversionErrorMessage: String? = nil
+
+    // Frame integrity (post-conversion verification)
+    @Published var encodedFrameCount: Int? = nil
+    @Published var frameIntegrityText: String = ""
 
     private var importStartTime: Date?
+
+    // The interval (in seconds) actually used to encode the video.
+    // Defaults to the app's original fixed rate (2 fps = 0.5s) until we
+    // manage to measure a real one from the device.
+    private var currentFrameInterval: Double = 0.5
 
     private let cache = RecordingCache()
     private let garmin = GarminDevice()
@@ -181,11 +194,15 @@ class MTPManager: ObservableObject {
 
         importComplete = false
         conversionComplete = false
+        conversionErrorMessage = nil
         isImporting = true
         importProgress = 0
         importedImageURLs = []
         outputVideo = nil
         importStartTime = Date()
+        measuredCaptureFPS = nil
+        encodedFrameCount = nil
+        frameIntegrityText = ""
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self else { return }
@@ -211,6 +228,10 @@ class MTPManager: ObservableObject {
             self.log("📂 Importing \(displayName)")
 
             let files = LIBMTP_Get_Filelisting_With_Callback(device, nil, nil)
+
+            // Grab real per-frame timestamps BEFORE printFiles runs, since
+            // printFiles destroys this file listing once it's done.
+            let timestamps = self.garmin.frameTimestamps(files, parentFolderID: folderID)
 
             self.garmin.printFiles(
                 files,
@@ -252,6 +273,16 @@ class MTPManager: ObservableObject {
             let minutes = Int(duration) / 60
             let seconds = Int(duration) % 60
 
+            // Measure the real interval between captured frames.
+            let measuredInterval = self.measuredFrameInterval(from: timestamps)
+            self.currentFrameInterval = measuredInterval ?? 0.5
+
+            if let measuredInterval {
+                self.log(String(format: "📏 Measured capture rate: %.2f fps (from device timestamps)", 1.0 / measuredInterval))
+            } else {
+                self.log("⚠️ Couldn't measure capture rate from device — using default 2 fps")
+            }
+
             DispatchQueue.main.async {
                 self.isImporting = false
                 self.importComplete = true
@@ -263,10 +294,36 @@ class MTPManager: ObservableObject {
                 self.latestRecordingDimensions = dimensionsText
                 self.latestRecordingDate = Date()
                 self.latestRecordingFolderName = displayName
+                self.measuredCaptureFPS = measuredInterval.map { 1.0 / $0 }
             }
 
             self.logActivity("Imported \(images.count) files from \(displayName)")
         }
+    }
+
+    /// Calculates the real average interval between captured frames, using
+    /// the total time span across ALL frames divided by the number of gaps
+    /// — rather than looking at individual frame-to-frame deltas.
+    ///
+    /// This matters because the Garmin's MTP timestamps only have
+    /// whole-second precision: individual gaps would mostly round to 0 or 1
+    /// second and be useless on their own, but averaging the total span
+    /// across hundreds of frames cancels that quantization out and gives an
+    /// accurate sub-second capture rate.
+    private func measuredFrameInterval(from timestamps: [GarminDevice.FrameTimestamp]) -> Double? {
+
+        guard timestamps.count >= 2 else { return nil }
+
+        let sorted = timestamps.sorted { $0.filename < $1.filename }
+
+        guard let first = sorted.first?.date, let last = sorted.last?.date else { return nil }
+
+        let totalSpan = last.timeIntervalSince(first)
+        let gapCount = Double(sorted.count - 1)
+
+        guard totalSpan > 0, gapCount > 0 else { return nil }
+
+        return totalSpan / gapCount
     }
 
     // MARK: - Delete
@@ -325,23 +382,50 @@ class MTPManager: ObservableObject {
 
         isConverting = true
         conversionComplete = false
+        conversionErrorMessage = nil
+        encodedFrameCount = nil
+        frameIntegrityText = ""
 
         setStatus("🎬 Converting to video...")
 
-        cache.convertLatestRecording { [weak self] video in
+        let framerate = 1.0 / currentFrameInterval
+
+        cache.convertLatestRecording(framerate: framerate) { [weak self] video, errorMessage in
             guard let self else { return }
             self.isConverting = false
-            if let video {
-                self.outputVideo = video
-                self.conversionComplete = true
-                self.setStatus("✅ Video converted")
-                self.log("🎥 Saved: \(video.lastPathComponent)")
-                self.logActivity("Converted to MP4")
-                self.logActivity("Saved to Movies folder")
-            } else {
-                self.setStatus("❌ Video conversion failed")
-                self.log("❌ Video conversion failed")
+
+            guard let video else {
+                let message = errorMessage ?? "Video conversion failed"
+                self.setStatus("❌ \(message)")
+                self.log("❌ \(message)")
+                self.conversionErrorMessage = message
                 self.logActivity("Conversion failed")
+                return
+            }
+
+            self.outputVideo = video
+            self.conversionComplete = true
+            self.setStatus("✅ Video converted")
+            self.log("🎥 Saved: \(video.lastPathComponent)")
+            self.logActivity("Converted to MP4")
+            self.logActivity("Saved to Movies folder")
+
+            // Verify no frames were dropped between capture → download → encode.
+            self.cache.encodedFrameCount(of: video) { encoded in
+                self.encodedFrameCount = encoded
+
+                let expected = self.importedImageURLs.count
+
+                if let encoded {
+                    if encoded == expected {
+                        self.frameIntegrityText = "✅ \(encoded)/\(expected) frames encoded — nothing dropped"
+                    } else {
+                        self.frameIntegrityText = "⚠️ \(encoded)/\(expected) frames encoded — some frames may have been dropped"
+                    }
+                    self.log(self.frameIntegrityText)
+                } else {
+                    self.frameIntegrityText = "Frame count could not be verified"
+                }
             }
         }
     }

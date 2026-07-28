@@ -241,4 +241,42 @@ class GarminDevice {
 
         return results
     }
+
+    // MARK: - Frame timing
+
+    struct FrameTimestamp {
+        let filename: String
+        let date: Date
+    }
+
+    /// Reads each BMP frame's real MTP modification timestamp for a given
+    /// recording folder. This lets us measure the ACTUAL interval between
+    /// captured frames, instead of assuming a fixed frame rate — so the
+    /// exported video's duration genuinely matches how long the ride took.
+    func frameTimestamps(
+        _ files: UnsafeMutablePointer<LIBMTP_file_t>?,
+        parentFolderID: UInt32
+    ) -> [FrameTimestamp] {
+
+        guard let files else { return [] }
+
+        var results: [FrameTimestamp] = []
+        var current: UnsafeMutablePointer<LIBMTP_file_t>? = files
+
+        while let file = current {
+
+            let name = String(cString: file.pointee.filename)
+
+            if name.uppercased().hasSuffix(".BMP"),
+               file.pointee.parent_id == parentFolderID {
+
+                let date = Date(timeIntervalSince1970: TimeInterval(file.pointee.modificationdate))
+                results.append(FrameTimestamp(filename: name, date: date))
+            }
+
+            current = file.pointee.next
+        }
+
+        return results
+    }
 }

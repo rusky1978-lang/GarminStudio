@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE5178EC301370810012FFF6 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = CE5178EB301370810012FFF6 /* Sentry */; };
 		CECB132E300F290A00096CA4 /* libusb-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */; };
 		CECB1330300F292000096CA4 /* libmtp.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB132F300F292000096CA4 /* libmtp.9.dylib */; };
 		CECB1331300F2F8500096CA4 /* libusb-1.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -50,6 +51,7 @@
 			files = (
 				CECB132E300F290A00096CA4 /* libusb-1.0.0.dylib in Frameworks */,
 				CECB1330300F292000096CA4 /* libmtp.9.dylib in Frameworks */,
+				CE5178EC301370810012FFF6 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +123,7 @@
 			);
 			name = "Garmin Screen Studio v1.1";
 			packageProductDependencies = (
+				CE5178EB301370810012FFF6 /* Sentry */,
 			);
 			productName = "Garmin Screen Studio v1.1";
 			productReference = CE63FE262FFCB07900508C3D /* Garmin Screen Studio v1.1.app */;
@@ -150,6 +153,9 @@
 			);
 			mainGroup = CE63FE1D2FFCB07900508C3D;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CE5178EA301370810012FFF6 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CE63FE272FFCB07900508C3D /* Products */;
 			projectDirPath = "";
@@ -301,7 +307,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=*]" = x86_64;
@@ -352,7 +358,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=*]" = x86_64;
@@ -420,6 +426,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CE5178EA301370810012FFF6 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.23.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CE5178EB301370810012FFF6 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE5178EA301370810012FFF6 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CE63FE1E2FFCB07900508C3D /* Project object */;
 }

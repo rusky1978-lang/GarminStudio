@@ -1,8 +1,13 @@
 import SwiftUI
 import AppKit
+import Sentry
 
 @main
 struct Garmin_Screen_Studio_v1_1App: App {
+
+    init() {
+        configureCrashReporting()
+    }
 
     var body: some Scene {
 
@@ -38,6 +43,32 @@ struct Garmin_Screen_Studio_v1_1App: App {
 
     }
 
+    // MARK: - Crash reporting (Sentry)
+
+    private func configureCrashReporting() {
+
+        SentrySDK.start { options in
+
+            options.dsn = "https://b01d5a710ea0d8f9c6fd7d80ed28c549@o4511789665157120.ingest.de.sentry.io/4511789669220432"
+
+            // Crash reporting only — no performance tracing, no session/analytics tracking.
+            options.tracesSampleRate = 0.0
+            options.enableAutoSessionTracking = false
+            options.enableAutoPerformanceTracing = false
+            options.debug = false
+        }
+
+        let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
+        let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
+        let macOSVersion = ProcessInfo.processInfo.operatingSystemVersionString
+
+        SentrySDK.configureScope { scope in
+            scope.setTag(value: shortVersion, key: "app_version")
+            scope.setTag(value: buildNumber, key: "build_number")
+            scope.setTag(value: macOSVersion, key: "macos_version")
+        }
+    }
+
     private func showAboutPanel() {
 
         let credits = NSMutableAttributedString(
@@ -67,9 +98,14 @@ struct Garmin_Screen_Studio_v1_1App: App {
             range: NSRange(location: 0, length: credits.length)
         )
 
+        let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
+        let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
+        let versionText = "Version \(shortVersion) (Build \(buildNumber))"
+
         NSApp.orderFrontStandardAboutPanel(options: [
             .applicationName: "Garmin Screen Studio",
-            .applicationVersion: "1.1",
+            .applicationVersion: versionText,
+            .version: "",
             .credits: credits,
             .applicationIcon: NSApp.applicationIconImage ?? NSImage()
         ])

@@ -3,18 +3,23 @@ import AppKit
 import Combine
 
 // MARK: - Palette
+// Semantic system colours so the UI adapts automatically to Light/Dark Mode.
 
 extension Color {
-    static let panelBackground = Color(red: 0.06, green: 0.07, blue: 0.11)
-    static let sidebarBackground = Color(red: 0.05, green: 0.055, blue: 0.09)
-    static let cardBackground = Color(red: 0.10, green: 0.11, blue: 0.16)
-    static let cardBorder = Color.white.opacity(0.07)
+    static let panelBackground = Color(nsColor: .windowBackgroundColor)
+    static let sidebarBackground = Color(nsColor: .controlBackgroundColor)
+    static let cardBackground = Color(nsColor: .textBackgroundColor)
+    static let cardBorder = Color(nsColor: .separatorColor)
 }
 
 struct ContentView: View {
 
     @StateObject private var mtp = MTPManager()
     @State private var showRecordingBrowser = false
+    @State private var showCreatorMode = false
+
+    @AppStorage("hasSeenWelcomeBeta1") private var hasSeenWelcome = false
+    @State private var showWelcome = false
 
     var body: some View {
 
@@ -32,9 +37,22 @@ struct ContentView: View {
 
         }
         .frame(width: 1180, height: 760)
-        .foregroundStyle(.white)
+        .onAppear {
+            if !hasSeenWelcome {
+                showWelcome = true
+            }
+        }
         .sheet(isPresented: $showRecordingBrowser) {
             RecordingBrowserView(mtp: mtp)
+        }
+        .sheet(isPresented: $showCreatorMode) {
+            CreatorModeView(mtp: mtp)
+        }
+        .sheet(isPresented: $showWelcome) {
+            WelcomeView {
+                hasSeenWelcome = true
+                showWelcome = false
+            }
         }
     }
 
@@ -48,12 +66,12 @@ struct ContentView: View {
 
                 ZStack {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .strokeBorder(Color.white, lineWidth: 1.5)
+                        .strokeBorder(Color.primary, lineWidth: 1.5)
                         .frame(width: 48, height: 48)
 
                     Image(systemName: "play.fill")
                         .font(.system(size: 16))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                 }
 
                 VStack(alignment: .leading, spacing: 1) {
@@ -144,6 +162,15 @@ struct ContentView: View {
             }
 
             actionRow(
+                icon: "arrow.down.doc.fill",
+                title: "Convert to MP4",
+                subtitle: "Create a video file",
+                disabled: !mtp.importComplete || mtp.isConverting
+            ) {
+                mtp.convertToVideo()
+            }
+
+            actionRow(
                 icon: "folder",
                 title: "Open Movies Folder",
                 subtitle: "View converted videos"
@@ -154,20 +181,11 @@ struct ContentView: View {
             }
 
             actionRow(
-                icon: "arrow.down.doc.fill",
-                title: "Convert to MP4",
-                subtitle: "Create a video file",
-                disabled: !mtp.importComplete || mtp.isConverting
+                icon: "video.badge.plus",
+                title: "Creator Mode (Beta)",
+                subtitle: "Import camera footage"
             ) {
-                mtp.convertToVideo()
-            }
-
-            actionRow(
-                icon: "gearshape.fill",
-                title: "Settings",
-                subtitle: "App preferences"
-            ) {
-                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                showCreatorMode = true
             }
         }
     }
@@ -194,7 +212,7 @@ struct ContentView: View {
                         .font(.system(size: 13, weight: .medium))
                     Text(subtitle)
                         .font(.caption2)
-                        .foregroundStyle(highlighted ? .white.opacity(0.75) : .secondary)
+                        .foregroundStyle(highlighted ? Color.white.opacity(0.75) : .secondary)
                 }
 
                 Spacer()
@@ -204,6 +222,7 @@ struct ContentView: View {
                 RoundedRectangle(cornerRadius: 9, style: .continuous)
                     .fill(highlighted ? Color.blue : Color.clear)
             )
+            .foregroundStyle(highlighted ? Color.white : Color.primary)
         }
         .buttonStyle(.plain)
         .opacity(disabled ? 0.4 : 1)
@@ -415,6 +434,10 @@ struct ContentView: View {
                     }
 
                     metaRow(icon: "internaldrive", text: mtp.dataImportedText)
+
+                    if let fps = mtp.measuredCaptureFPS {
+                        metaRow(icon: "speedometer", text: String(format: "Measured capture rate: %.2f fps", fps))
+                    }
                 }
                 .padding(.top, 4)
 
@@ -472,6 +495,7 @@ struct ContentView: View {
                 if !mtp.importedImageURLs.isEmpty {
                     Text("\(mtp.importedImageURLs.count)")
                         .font(.caption2.bold())
+                        .foregroundStyle(.white)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 2)
                         .background(Capsule().fill(Color.blue))
@@ -552,6 +576,10 @@ struct ContentView: View {
                         Text("Converting…")
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                    } else if let errorMessage = mtp.conversionErrorMessage {
+                        Text(errorMessage)
+                            .font(.caption)
+                            .foregroundStyle(.red)
                     } else if mtp.importComplete {
                         Text("Ready to convert \(mtp.importedImageURLs.count) images to video")
                             .font(.caption)
@@ -562,6 +590,12 @@ struct ContentView: View {
                     } else {
                         Text("Import a recording first")
                             .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if !mtp.frameIntegrityText.isEmpty {
+                        Text(mtp.frameIntegrityText)
+                            .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
                 }

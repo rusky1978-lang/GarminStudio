@@ -4,11 +4,15 @@ class VideoConverter {
 
     private let runner = FFmpegRunner()
 
-    func convert(images: [URL], completion: @escaping (URL?) -> Void) {
+    /// Converts the given BMP frames to an MP4 at the given framerate.
+    /// `completion` reports the output URL on success, or nil plus a
+    /// human-readable error message on failure.
+    func convert(images: [URL], framerate: Double, completion: @escaping (URL?, String?) -> Void) {
 
         guard let firstImage = images.first else {
-            print("❌ No images found.")
-            completion(nil)
+            let message = "No images found."
+            print("❌ \(message)")
+            completion(nil, message)
             return
         }
 
@@ -33,12 +37,19 @@ class VideoConverter {
         print("📂 Cache Folder: \(cacheFolder.path)")
         print("🎥 Videos Folder: \(videosFolder.path)")
         print("🎞️ Frames: \(images.count)")
+        print("⏱️ Framerate: \(framerate) fps")
 
         runner.convert(
             folder: cacheFolder,
-            outputFile: outputFile
-        ) { success in
-            completion(success ? outputFile : nil)
+            outputFile: outputFile,
+            framerate: framerate
+        ) { success, errorMessage in
+            completion(success ? outputFile : nil, errorMessage)
         }
+    }
+
+    /// Counts the frames actually encoded into a finished MP4.
+    func frameCount(of video: URL, completion: @escaping (Int?) -> Void) {
+        runner.countEncodedFrames(videoFile: video, completion: completion)
     }
 }

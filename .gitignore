@@ -20,3 +20,23 @@ Garmin Screen Studio v1.1 3/
 # Root dylibs
 libmtp*.dylib
 libusb*.dylib
+
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+
+# User settings
+xcuserdata/
+
+# macOS
+.DS_Store
+
+# SwiftPM
+.build/
+
+# Archives
+*.xcarchive
+
+# Xcode Cloud
+.swiftpm

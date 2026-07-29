@@ -4,12 +4,12 @@ class VideoConverter {
 
     private let runner = FFmpegRunner()
 
-    @discardableResult
-    func convert(images: [URL]) -> URL? {
+    func convert(images: [URL], completion: @escaping (URL?) -> Void) {
 
         guard let firstImage = images.first else {
             print("❌ No images found.")
-            return nil
+            completion(nil)
+            return
         }
 
         let cacheFolder = firstImage.deletingLastPathComponent()
@@ -37,8 +37,8 @@ class VideoConverter {
         runner.convert(
             folder: cacheFolder,
             outputFile: outputFile
-        )
-
-        return outputFile
+        ) { success in
+            completion(success ? outputFile : nil)
+        }
     }
 }

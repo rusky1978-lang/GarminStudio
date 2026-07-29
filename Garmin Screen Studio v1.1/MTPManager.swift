@@ -1,118 +1,381 @@
 import Foundation
 import Combine
+import ImageIO
+import CoreGraphics
 
-@MainActor
+struct ActivityItem: Identifiable {
+    let id = UUID()
+    let message: String
+    let time: Date
+
+    var timeText: String {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm"
+        return f.string(from: time)
+    }
+}
+
 class MTPManager: ObservableObject {
 
-    @Published var status = "🔌 Connect your Garmin and press Import Latest Recording"
+    // Console-style technical log (kept for debugging)
     @Published var activityLog: [String] = []
-    @Published var progress: Double = 0
-    @Published var isWorking = false
-    @Published var finished = false
+
+    // Sidebar "Recent Activity" feed
+    @Published var recentActivity: [ActivityItem] = []
+
+    // Device info
+    @Published var deviceConnected = false
+    @Published var deviceName = "No Device"
+    @Published var storageFreeGB: Double? = nil
+
+    // Recording browser
+    @Published var recordings: [GarminRecording] = []
+    @Published var isScanningRecordings = false
+    @Published var scanStatus = ""
+
+    // Import state
+    @Published var isImporting = false
+    @Published var importComplete = false
+    @Published var importProgress: Double = 0
+    @Published var importStatus = "Browse your Garmin to choose a recording to import"
+    @Published var importedFileCount = 0
+    @Published var importDurationText = "--:--"
+    @Published var dataImportedText = "-- MB"
+    @Published var importedImageURLs: [URL] = []
+    @Published var latestRecordingFolderName = ""
+    @Published var latestRecordingDate: Date?
+    @Published var latestRecordingDimensions = ""
+
+    // Conversion state
+    @Published var isConverting = false
+    @Published var conversionComplete = false
     @Published var outputVideo: URL?
 
-    private var parentFolderID: UInt32 = 0
+    private var importStartTime: Date?
 
     private let cache = RecordingCache()
     private let garmin = GarminDevice()
 
+    // MARK: - Thread-safe UI helpers
+
     func log(_ message: String) {
-        print(message)
-        activityLog.append(message)
-        if activityLog.count > 8 {
-            activityLog.removeFirst()
+        DispatchQueue.main.async {
+            print(message)
+            self.activityLog.append(message)
+            if self.activityLog.count > 8 {
+                self.activityLog.removeFirst()
+            }
         }
     }
 
-    func test() {
-
-        finished = false
-        isWorking = true
-        progress = 0
-
-        cache.clear()
-
-        status = "🔍 Looking for Garmin..."
-        log("🚀 Initialising libmtp...")
-
-        LIBMTP_Init()
-
-        guard let device = LIBMTP_Get_First_Device() else {
-            print("❌ No device found")
-            isWorking = false
-            return
+    private func logActivity(_ message: String) {
+        DispatchQueue.main.async {
+            self.recentActivity.insert(ActivityItem(message: message, time: Date()), at: 0)
+            if self.recentActivity.count > 6 {
+                self.recentActivity.removeLast()
+            }
         }
+    }
 
-        status = "🟢 Garmin Connected"
-        log("🟢 Garmin connected")
+    private func setStatus(_ text: String) {
+        DispatchQueue.main.async { self.importStatus = text }
+    }
 
-        guard let folders = LIBMTP_Get_Folder_List(device) else {
-            print("❌ Folder tree is nil")
+    private func setScanStatus(_ text: String) {
+        DispatchQueue.main.async { self.scanStatus = text }
+    }
+
+    private func setProgress(_ value: Double) {
+        DispatchQueue.main.async { self.importProgress = value }
+    }
+
+    // MARK: - Scanning (Recording Browser)
+
+    func scanRecordings() {
+
+        isScanningRecordings = true
+
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+
+            self.setScanStatus("🔍 Looking for Garmin...")
+
+            LIBMTP_Init()
+
+            guard let device = LIBMTP_Get_First_Device() else {
+                DispatchQueue.main.async {
+                    self.isScanningRecordings = false
+                    self.deviceConnected = false
+                    self.recordings = []
+                }
+                return
+            }
+
+            let modelName = self.garmin.deviceModelName(device)
+            let freeGB = self.garmin.freeStorageGB(device)
+
+            DispatchQueue.main.async {
+                self.deviceConnected = true
+                self.deviceName = modelName
+                self.storageFreeGB = freeGB
+            }
+
+            self.setScanStatus("📂 Scanning recordings...")
+
+            guard let folders = LIBMTP_Get_Folder_List(device) else {
+                LIBMTP_Release_Device(device)
+                DispatchQueue.main.async { self.isScanningRecordings = false }
+                return
+            }
+
+            let folderInfos = self.garmin.allRecordingFolders(folders)
+
+            let files = LIBMTP_Get_Filelisting_With_Callback(device, nil, nil)
+
+            var counts: [UInt32: Int] = [:]
+            var current: UnsafeMutablePointer<LIBMTP_file_t>? = files
+
+            while let file = current {
+                let filename = String(cString: file.pointee.filename)
+                if filename.uppercased().hasSuffix(".BMP") {
+                    counts[file.pointee.parent_id, default: 0] += 1
+                }
+                current = file.pointee.next
+            }
+
+            if let files {
+                LIBMTP_destroy_file_t(files)
+            }
+
             LIBMTP_Release_Device(device)
-            isWorking = false
-            return
+
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+
+            let results: [GarminRecording] = folderInfos.map { info in
+                GarminRecording(
+                    id: info.framesFolderID,
+                    dateFolderID: info.dateFolderID,
+                    name: info.name,
+                    date: formatter.date(from: info.name),
+                    imageCount: counts[info.framesFolderID] ?? 0
+                )
+            }
+            .sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) }
+
+            DispatchQueue.main.async {
+                self.recordings = results
+                self.isScanningRecordings = false
+                self.scanStatus = ""
+            }
         }
+    }
 
-        log("📂 Reading latest recording")
+    // MARK: - Import
 
-        if let latestRecording = garmin.latestRecordingFolder(folders) {
+    func importRecording(_ recording: GarminRecording) {
+        performImport(folderID: recording.id, displayName: recording.name)
+    }
 
-            print("")
-            print("Latest recording folder ID: \(latestRecording)")
+    private func performImport(folderID: UInt32, displayName: String) {
 
-            parentFolderID = latestRecording
+        importComplete = false
+        conversionComplete = false
+        isImporting = true
+        importProgress = 0
+        importedImageURLs = []
+        outputVideo = nil
+        importStartTime = Date()
 
-            print("Child folder ID: \(latestRecording)")
-            print("")
-            print("📂 Loading complete file listing...")
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
 
-            let files = LIBMTP_Get_Filelisting_With_Callback(
-                device,
-                nil,
-                nil
-            )
+            self.cache.clear(log: { message in self.log(message) })
 
-            print("✅ File list loaded")
-            print("")
+            self.setStatus("🔍 Connecting to Garmin...")
+            self.log("🚀 Initialising libmtp...")
 
-            garmin.printFiles(
+            LIBMTP_Init()
+
+            guard let device = LIBMTP_Get_First_Device() else {
+                print("❌ No device found")
+                DispatchQueue.main.async {
+                    self.isImporting = false
+                    self.deviceConnected = false
+                }
+                return
+            }
+
+            self.setStatus("🟢 Garmin Connected")
+            self.log("🟢 Garmin connected")
+            self.log("📂 Importing \(displayName)")
+
+            let files = LIBMTP_Get_Filelisting_With_Callback(device, nil, nil)
+
+            self.garmin.printFiles(
                 files,
                 device: device,
-                parentFolderID: parentFolderID,
-                progressUpdate: { progress in
-                    self.progress = progress
-                },
-                statusUpdate: { status in
-                    self.status = status
-                }
+                parentFolderID: folderID,
+                progressUpdate: { progress in self.setProgress(progress) },
+                statusUpdate: { status in self.setStatus(status) }
             )
+
+            LIBMTP_Release_Device(device)
+
+            self.log("✅ Import complete")
+            self.setStatus("✅ Import Complete!")
+
+            let images = (try? FileManager.default.contentsOfDirectory(
+                at: self.cache.cacheFolder,
+                includingPropertiesForKeys: [.fileSizeKey]
+            ))?
+            .filter { $0.pathExtension.lowercased() == "bmp" }
+            .sorted { $0.lastPathComponent < $1.lastPathComponent } ?? []
+
+            var totalBytes: Int64 = 0
+            for image in images {
+                if let size = try? image.resourceValues(forKeys: [.fileSizeKey]).fileSize {
+                    totalBytes += Int64(size)
+                }
+            }
+
+            var dimensionsText = ""
+            if let first = images.first,
+               let source = CGImageSourceCreateWithURL(first as CFURL, nil),
+               let props = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+               let width = props[kCGImagePropertyPixelWidth] as? Int,
+               let height = props[kCGImagePropertyPixelHeight] as? Int {
+                dimensionsText = "\(width) x \(height)"
+            }
+
+            let duration = Date().timeIntervalSince(self.importStartTime ?? Date())
+            let minutes = Int(duration) / 60
+            let seconds = Int(duration) % 60
+
+            DispatchQueue.main.async {
+                self.isImporting = false
+                self.importComplete = true
+                self.importProgress = 1.0
+                self.importedFileCount = images.count
+                self.importedImageURLs = images
+                self.dataImportedText = self.formatBytes(totalBytes)
+                self.importDurationText = String(format: "%02d:%02d", minutes, seconds)
+                self.latestRecordingDimensions = dimensionsText
+                self.latestRecordingDate = Date()
+                self.latestRecordingFolderName = displayName
+            }
+
+            self.logActivity("Imported \(images.count) files from \(displayName)")
         }
+    }
 
-        LIBMTP_Release_Device(device)
+    // MARK: - Delete
 
-        print("")
-        log("✅ Import complete")
-        status = "✅ Finished"
+    func deleteRecordings(_ toDelete: [GarminRecording]) {
 
-        isWorking = false
-        finished = true
-        progress = 1.0
+        guard !toDelete.isEmpty else { return }
 
-        if let video = cache.convertLatestRecording() {
-            outputVideo = video
-            status = "✅ Video converted"
-            log("🎥 Saved: \(video.lastPathComponent)")
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+
+            LIBMTP_Init()
+
+            guard let device = LIBMTP_Get_First_Device() else { return }
+
+            let files = LIBMTP_Get_Filelisting_With_Callback(device, nil, nil)
+
+            for recording in toDelete {
+
+                self.log("🗑️ Deleting \(recording.name)")
+
+                var current: UnsafeMutablePointer<LIBMTP_file_t>? = files
+
+                while let file = current {
+                    if file.pointee.parent_id == recording.id {
+                        LIBMTP_Delete_Object(device, file.pointee.item_id)
+                    }
+                    current = file.pointee.next
+                }
+
+                LIBMTP_Delete_Object(device, recording.id)
+                LIBMTP_Delete_Object(device, recording.dateFolderID)
+            }
+
+            if let files {
+                LIBMTP_destroy_file_t(files)
+            }
+
+            LIBMTP_Release_Device(device)
+
+            self.log("✅ Deleted \(toDelete.count) recording(s)")
+            self.logActivity("Deleted \(toDelete.count) recording(s)")
+
+            DispatchQueue.main.async {
+                let deletedIDs = Set(toDelete.map { $0.id })
+                self.recordings.removeAll { deletedIDs.contains($0.id) }
+            }
         }
+    }
+
+    // MARK: - Conversion
+
+    func convertToVideo() {
+
+        guard !importedImageURLs.isEmpty else { return }
+
+        isConverting = true
+        conversionComplete = false
+
+        setStatus("🎬 Converting to video...")
+
+        cache.convertLatestRecording { [weak self] video in
+            guard let self else { return }
+            self.isConverting = false
+            if let video {
+                self.outputVideo = video
+                self.conversionComplete = true
+                self.setStatus("✅ Video converted")
+                self.log("🎥 Saved: \(video.lastPathComponent)")
+                self.logActivity("Converted to MP4")
+                self.logActivity("Saved to Movies folder")
+            } else {
+                self.setStatus("❌ Video conversion failed")
+                self.log("❌ Video conversion failed")
+                self.logActivity("Conversion failed")
+            }
+        }
+    }
+
+    // MARK: - Estimates
+
+    var estimatedConversionSizeText: String {
+        let estimateMB = Double(importedImageURLs.count) * 1.05
+        if estimateMB >= 1024 {
+            return String(format: "~%.2f GB", estimateMB / 1024)
+        }
+        return String(format: "~%.0f MB", estimateMB)
+    }
+
+    var estimatedConversionTimeText: String {
+        let seconds = Double(importedImageURLs.count) * 0.3
+        let minutes = max(1, Int(seconds / 60))
+        return "\(minutes) - \(minutes + 2) minutes"
+    }
+
+    // MARK: - Helpers
+
+    private func formatBytes(_ bytes: Int64) -> String {
+        let gb = Double(bytes) / 1_073_741_824.0
+        if gb >= 1 {
+            return String(format: "%.2f GB", gb)
+        }
+        let mb = Double(bytes) / 1_048_576.0
+        return String(format: "%.0f MB", mb)
     }
 
     func isGarminConnected() -> Bool {
-
         LIBMTP_Init()
-
-        guard let device = LIBMTP_Get_First_Device() else {
-            return false
-        }
-
+        guard let device = LIBMTP_Get_First_Device() else { return false }
         LIBMTP_Release_Device(device)
         return true
     }

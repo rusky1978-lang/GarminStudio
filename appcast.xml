@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+    <channel>
+        <title>Garmin Screen Studio Updates</title>
+        <description>Appcast for Garmin Screen Studio.</description>
+        <language>en</language>
+
+        <!-- TODO: Add one <item> per published release. Do not use placeholder URLs in production. -->
+        <!--
+        <item>
+            <title>Version TODO</title>
+            <sparkle:version>TODO_BUILD_NUMBER</sparkle:version>
+            <sparkle:shortVersionString>TODO_VERSION</sparkle:shortVersionString>
+            <description><![CDATA[
+                <h2>Changes</h2>
+                <ul>
+                    <li>TODO: Add release notes.</li>
+                </ul>
+            ]]></description>
+            <pubDate>TODO_RFC_2822_DATE</pubDate>
+            <enclosure
+                url="TODO_FINAL_GITHUB_RELEASE_ASSET_URL"
+                sparkle:edSignature="TODO_SPARKLE_ED_SIGNATURE"
+                length="TODO_FILE_SIZE_BYTES"
+                type="application/octet-stream" />
+        </item>
+        -->
+    </channel>
+</rss>

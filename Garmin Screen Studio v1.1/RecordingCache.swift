@@ -43,7 +43,7 @@ class RecordingCache {
 
     }
 
-    func convertLatestRecording() -> URL? {
+    func convertLatestRecording(completion: @escaping (URL?) -> Void) {
 
         guard let images = try? fileManager.contentsOfDirectory(
             at: cacheFolder,
@@ -53,11 +53,12 @@ class RecordingCache {
         .sorted(by: { $0.lastPathComponent < $1.lastPathComponent })
         else {
 
-            return nil
+            completion(nil)
+            return
 
         }
 
-        return converter.convert(images: images)
+        converter.convert(images: images, completion: completion)
 
     }
 

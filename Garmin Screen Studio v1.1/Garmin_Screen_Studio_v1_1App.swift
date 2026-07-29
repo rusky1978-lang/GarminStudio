@@ -103,9 +103,7 @@ struct Garmin_Screen_Studio_v1_1App: App {
                 Button("About Garmin Screen Studio") {
                     showAboutPanel()
                 }
-            }
 
-            CommandGroup(after: .appInfo) {
                 CheckForUpdatesView(
                     updater: updaterController.updater,
                     hasUpdateFeed: hasUpdateFeed

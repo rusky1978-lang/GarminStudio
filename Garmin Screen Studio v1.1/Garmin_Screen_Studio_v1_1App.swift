@@ -4,8 +4,7 @@ import Combine
 import Sparkle
 
 final class SparkleProductionConfiguration: NSObject, SPUUpdaterDelegate {
-    // TODO: Set this to the production appcast URL, or add SUFeedURL in the target Info settings.
-    private static let appcastURLString: String? = nil
+    private static let appcastURLString: String? = "https://rusky1978-lang.github.io/GarminStudio/appcast.xml"
 
     private static let publicEDKey: String? = "gh4ttnTbfFrDequS0xD/WbHyurUFvzVVKsMpyqgzNVM="
 

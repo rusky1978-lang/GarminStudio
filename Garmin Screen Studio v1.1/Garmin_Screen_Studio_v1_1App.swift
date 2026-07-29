@@ -3,6 +3,30 @@ import AppKit
 import Combine
 import Sparkle
 
+final class SparkleProductionConfiguration: NSObject, SPUUpdaterDelegate {
+    // TODO: Set this to the production appcast URL, or add SUFeedURL in the target Info settings.
+    private static let appcastURLString: String? = nil
+
+    // TODO: Add this generated value to the target Info settings as SUPublicEDKey.
+    private static let publicEDKey: String? = nil
+
+    var isReadyForUpdater: Bool {
+        hasFeedURL && hasPublicEDKey
+    }
+
+    private var hasFeedURL: Bool {
+        Self.appcastURLString != nil || Bundle.main.object(forInfoDictionaryKey: "SUFeedURL") != nil
+    }
+
+    private var hasPublicEDKey: Bool {
+        Self.publicEDKey != nil || Bundle.main.object(forInfoDictionaryKey: "SUPublicEDKey") != nil
+    }
+
+    func feedURLString(for updater: SPUUpdater) -> String? {
+        Self.appcastURLString
+    }
+}
+
 final class CheckForUpdatesViewModel: ObservableObject {
     @Published var canCheckForUpdates: Bool
 
@@ -54,14 +78,17 @@ private extension NSAlert {
 
 @main
 struct Garmin_Screen_Studio_v1_1App: App {
+    private let sparkleConfiguration: SparkleProductionConfiguration
     private let updaterController: SPUStandardUpdaterController
     private let hasUpdateFeed: Bool
 
     init() {
-        hasUpdateFeed = Bundle.main.object(forInfoDictionaryKey: "SUFeedURL") != nil
+        let sparkleConfiguration = SparkleProductionConfiguration()
+        self.sparkleConfiguration = sparkleConfiguration
+        hasUpdateFeed = sparkleConfiguration.isReadyForUpdater
         updaterController = SPUStandardUpdaterController(
             startingUpdater: hasUpdateFeed,
-            updaterDelegate: nil,
+            updaterDelegate: sparkleConfiguration,
             userDriverDelegate: nil
         )
     }

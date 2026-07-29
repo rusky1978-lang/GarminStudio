@@ -7,8 +7,7 @@ final class SparkleProductionConfiguration: NSObject, SPUUpdaterDelegate {
     // TODO: Set this to the production appcast URL, or add SUFeedURL in the target Info settings.
     private static let appcastURLString: String? = nil
 
-    // TODO: Add this generated value to the target Info settings as SUPublicEDKey.
-    private static let publicEDKey: String? = nil
+    private static let publicEDKey: String? = "gh4ttnTbfFrDequS0xD/WbHyurUFvzVVKsMpyqgzNVM="
 
     var isReadyForUpdater: Bool {
         hasFeedURL && hasPublicEDKey

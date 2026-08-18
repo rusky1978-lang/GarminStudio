@@ -1,22 +1,40 @@
 import SwiftUI
 import AppKit
 import Combine
+import UniformTypeIdentifiers
 
 // MARK: - Palette
 
 extension Color {
-    static let panelBackground = Color(red: 0.06, green: 0.07, blue: 0.11)
-    static let sidebarBackground = Color(red: 0.05, green: 0.055, blue: 0.09)
-    static let cardBackground = Color(red: 0.10, green: 0.11, blue: 0.16)
-    static let cardBorder = Color.white.opacity(0.07)
+    static let panelBackground = Color(nsColor: .windowBackgroundColor)
+    static let sidebarBackground = Color(nsColor: .controlBackgroundColor)
+    static let cardBackground = Color(nsColor: .underPageBackgroundColor)
+    static let cardBorder = Color(nsColor: .separatorColor).opacity(0.45)
+    static let brandStroke = Color(nsColor: .labelColor)
+    static let brandIcon = Color(nsColor: .labelColor)
 }
 
 struct ContentView: View {
 
     @StateObject private var mtp = MTPManager()
+    @StateObject private var betaAccess = BetaAccessManager()
     @State private var showRecordingBrowser = false
 
     var body: some View {
+        mainContent
+    }
+
+    @ViewBuilder
+    private var mainContent: some View {
+        if betaAccess.hasValidAccess {
+            applicationContent
+        } else {
+            BetaActivationView(betaAccess: betaAccess)
+                .frame(width: 1180, height: 760)
+        }
+    }
+
+    private var applicationContent: some View {
 
         HStack(spacing: 0) {
 
@@ -26,13 +44,12 @@ struct ContentView: View {
 
             Divider().background(Color.cardBorder)
 
-            mainContent
+            dashboardContent
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.panelBackground)
 
         }
         .frame(width: 1180, height: 760)
-        .foregroundStyle(.white)
         .sheet(isPresented: $showRecordingBrowser) {
             RecordingBrowserView(mtp: mtp)
         }
@@ -48,12 +65,12 @@ struct ContentView: View {
 
                 ZStack {
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .strokeBorder(Color.white, lineWidth: 1.5)
+                        .strokeBorder(Color.brandStroke, lineWidth: 1.5)
                         .frame(width: 48, height: 48)
 
                     Image(systemName: "play.fill")
                         .font(.system(size: 16))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.brandIcon)
                 }
 
                 VStack(alignment: .leading, spacing: 1) {
@@ -80,6 +97,8 @@ struct ContentView: View {
             recentActivitySection
 
             Spacer()
+
+            betaStatus
 
             footerLink
 
@@ -148,9 +167,23 @@ struct ContentView: View {
                 title: "Open Movies Folder",
                 subtitle: "View converted videos"
             ) {
-                NSWorkspace.shared.open(
-                    URL(fileURLWithPath: NSHomeDirectory() + "/Movies/Garmin Screen Studio")
-                )
+                let moviesFolder = URL(fileURLWithPath: NSHomeDirectory() + "/Movies/Garmin Screen Studio")
+
+                // On a fresh install this folder doesn't exist yet (it's
+                // only created the first time a recording is imported or
+                // converted), so on a tester's Mac this action would
+                // silently fail. Create it on demand so the action always
+                // has something valid to open.
+                do {
+                    try FileManager.default.createDirectory(
+                        at: moviesFolder,
+                        withIntermediateDirectories: true
+                    )
+                } catch {
+                    Logger.error("Failed to create Movies folder at \(moviesFolder.path): \(error.localizedDescription)")
+                }
+
+                NSWorkspace.shared.open(moviesFolder)
             }
 
             actionRow(
@@ -169,6 +202,16 @@ struct ContentView: View {
             ) {
                 NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
             }
+
+            // Temporary — Stage 3 of the diagnostics system.
+            actionRow(
+                icon: "square.and.arrow.up",
+                title: "Export Diagnostics",
+                subtitle: "Save a report for support"
+            ) {
+                exportDiagnostics()
+            }
+
         }
     }
 
@@ -243,6 +286,18 @@ struct ContentView: View {
         }
     }
 
+    private var betaStatus: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "clock.badge.checkmark")
+                .font(.system(size: 11))
+                .foregroundStyle(.secondary)
+
+            Text("Beta • \(betaAccess.daysRemaining) days remaining")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+    }
+
     private var footerLink: some View {
 
         Link(destination: URL(string: "https://www.youtube.com/@CyclingwithRuss")!) {
@@ -264,7 +319,7 @@ struct ContentView: View {
 
     // MARK: - Main content
 
-    private var mainContent: some View {
+    private var dashboardContent: some View {
 
         ScrollView {
 
@@ -618,6 +673,39 @@ struct ContentView: View {
         .padding(18)
         .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Color.cardBackground))
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Color.cardBorder))
+    }
+
+    // MARK: - Diagnostics export (temporary — Stage 3)
+
+    private func exportDiagnostics() {
+
+        let report = DiagnosticsReport.generateReport(mtpManager: mtp)
+
+        let panel = NSSavePanel()
+        panel.title = "Export Diagnostics Report"
+        panel.allowedContentTypes = [.plainText]
+        panel.nameFieldStringValue = diagnosticsFilename()
+
+        panel.begin { response in
+
+            guard response == .OK, let url = panel.url else {
+                Logger.info("Diagnostics export cancelled")
+                return
+            }
+
+            do {
+                try report.write(to: url, atomically: true, encoding: .utf8)
+                Logger.success("Diagnostics report exported to \(url.path)")
+            } catch {
+                Logger.error("Diagnostics export failed: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func diagnosticsFilename() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd-HHmmss"
+        return "GarminScreenStudio-Diagnostics-\(formatter.string(from: Date())).txt"
     }
 
     // MARK: - Helpers

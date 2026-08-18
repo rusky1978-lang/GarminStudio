@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE876C13301D350400C94B23 /* libs in Resources */ = {isa = PBXBuildFile; fileRef = CE876C12301D350400C94B23 /* libs */; };
 		CECB132E300F290A00096CA4 /* libusb-1.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */; };
-		CECB1330300F292000096CA4 /* libmtp.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB132F300F292000096CA4 /* libmtp.9.dylib */; };
+		CECB1330300F292000096CA4 /* libmtp.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECB1333300F301500096CA4 /* libmtp.9.dylib */; };
 		CECB1331300F2F8500096CA4 /* libusb-1.0.0.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CECB1334300F301500096CA4 /* libmtp.9.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CECB1333300F301500096CA4 /* libmtp.9.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		CEE806C230193313006F7495 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = CEE806C130193313006F7495 /* Sparkle */; };
@@ -31,14 +32,43 @@
 /* Begin PBXFileReference section */
 		CE19055E2FFE1E4E00FC1701 /* GarminScreenStudio-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GarminScreenStudio-Bridging-Header.h"; sourceTree = "<group>"; };
 		CE63FE262FFCB07900508C3D /* Garmin Screen Studio v1.1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Garmin Screen Studio v1.1.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE876C12301D350400C94B23 /* libs */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libs; sourceTree = "<group>"; };
 		CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libusb-1.0.0.dylib"; path = "Frameworks/libusb-1.0.0.dylib"; sourceTree = "<group>"; };
-		CECB132F300F292000096CA4 /* libmtp.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmtp.9.dylib; path = /Users/russellgosling/Desktop/GarminLibs/libmtp.9.dylib; sourceTree = "<absolute>"; };
 		CECB1333300F301500096CA4 /* libmtp.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmtp.9.dylib; path = Frameworks/libmtp.9.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		CE876C11301D348700C94B23 /* Exceptions for "Garmin Screen Studio v1.1" folder in "Garmin Screen Studio v1.1" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				libs/libavcodec.62.28.102.dylib,
+				libs/libavdevice.62.3.102.dylib,
+				libs/libavfilter.11.14.102.dylib,
+				libs/libavformat.62.12.102.dylib,
+				libs/libavutil.60.26.102.dylib,
+				libs/libcrypto.3.dylib,
+				libs/libdav1d.7.dylib,
+				libs/libmp3lame.0.dylib,
+				libs/libopus.0.dylib,
+				libs/libssl.3.dylib,
+				libs/libSvtAv1Enc.4.1.0.dylib,
+				libs/libswresample.6.3.102.dylib,
+				libs/libswscale.9.5.102.dylib,
+				libs/libvmaf.3.dylib,
+				libs/libvpx.12.dylib,
+				libs/libx264.165.dylib,
+				libs/libx265.216.dylib,
+			);
+			target = CE63FE252FFCB07900508C3D /* Garmin Screen Studio v1.1 */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CE63FE282FFCB07900508C3D /* Garmin Screen Studio v1.1 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CE876C11301D348700C94B23 /* Exceptions for "Garmin Screen Studio v1.1" folder in "Garmin Screen Studio v1.1" target */,
+			);
 			path = "Garmin Screen Studio v1.1";
 			sourceTree = "<group>";
 		};
@@ -62,7 +92,6 @@
 			isa = PBXGroup;
 			children = (
 				CECB132D300F290A00096CA4 /* libusb-1.0.0.dylib */,
-				CECB132F300F292000096CA4 /* libmtp.9.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -77,6 +106,7 @@
 		CE63FE1D2FFCB07900508C3D = {
 			isa = PBXGroup;
 			children = (
+				CE876C12301D350400C94B23 /* libs */,
 				CECB1333300F301500096CA4 /* libmtp.9.dylib */,
 				CECB131C300F1CF300096CA4 /* Frameworks */,
 				CE19055E2FFE1E4E00FC1701 /* GarminScreenStudio-Bridging-Header.h */,
@@ -113,6 +143,7 @@
 				CE63FE232FFCB07900508C3D /* Frameworks */,
 				CE63FE242FFCB07900508C3D /* Resources */,
 				CECB1326300F1FE700096CA4 /* CopyFiles */,
+				CE9C59613032F94200C5D679 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -171,10 +202,34 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE876C13301D350400C94B23 /* libs in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CE9C59613032F94200C5D679 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/ffmpeg",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/libs",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "set -eu\n\nif [ \"${CODE_SIGNING_ALLOWED:-YES}\" != \"YES\" ]; then\n    exit 0\nfi\n\nsigning_identity=\"${EXPANDED_CODE_SIGN_IDENTITY:-}\"\n\nif [ -z \"$signing_identity\" ]; then\n    signing_identity=\"${CODE_SIGN_IDENTITY:-}\"\nfi\n\nif [ -z \"$signing_identity\" ]; then\n    exit 0\nfi\n\nresources_dir=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\"\nlibs_dir=\"$resources_dir/libs\"\n\nif [ -d \"$libs_dir\" ]; then\n    /usr/bin/find \"$libs_dir\" -type f -name \"*.dylib\" -exec /usr/bin/codesign --force --sign \"$signing_identity\" --options runtime --timestamp=none {} \\;\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CE63FE222FFCB07900508C3D /* Sources */ = {
@@ -306,10 +361,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				AUTOMATION_APPLE_EVENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=*]" = x86_64;
 				GENERATE_INFOPLIST_FILE = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/opt/libmtp/lib;
@@ -330,13 +394,53 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cyclingwithruss.Garmin-Screen-Studio-v1-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = macosx;
@@ -357,10 +461,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				AUTOMATION_APPLE_EVENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
+				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
+				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
+				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
+				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
+				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=*]" = x86_64;
 				GENERATE_INFOPLIST_FILE = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/opt/libmtp/lib;
@@ -381,14 +494,54 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Frameworks",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
+					"$(PROJECT_DIR)/Garmin\\ Screen\\ Studio\\ v1.1/libs",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				NEW_SETTING = "";
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cyclingwithruss.Garmin-Screen-Studio-v1-1";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
+				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
+				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
+				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
+				RUNTIME_EXCEPTION_DEBUGGING_TOOL = NO;
+				RUNTIME_EXCEPTION_DISABLE_EXECUTABLE_PAGE_PROTECTION = NO;
+				RUNTIME_EXCEPTION_DISABLE_LIBRARY_VALIDATION = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = macosx;

@@ -5,25 +5,22 @@
         <description>Appcast for Garmin Screen Studio.</description>
         <language>en</language>
 
-        <!-- TODO: Add one <item> per published release. Do not use placeholder URLs in production. -->
-        <!--
         <item>
-            <title>Version TODO</title>
-            <sparkle:version>TODO_BUILD_NUMBER</sparkle:version>
-            <sparkle:shortVersionString>TODO_VERSION</sparkle:shortVersionString>
+            <title>Garmin Screen Studio v1.1 Build 2</title>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>1.1</sparkle:shortVersionString>
             <description><![CDATA[
                 <h2>Changes</h2>
                 <ul>
-                    <li>TODO: Add release notes.</li>
+                    <li>Adds support for macOS Light and Dark Mode.</li>
                 </ul>
             ]]></description>
-            <pubDate>TODO_RFC_2822_DATE</pubDate>
+            <pubDate>Tue, 18 Aug 2026 16:45:00 +0100</pubDate>
             <enclosure
-                url="TODO_FINAL_GITHUB_RELEASE_ASSET_URL"
-                sparkle:edSignature="TODO_SPARKLE_ED_SIGNATURE"
-                length="TODO_FILE_SIZE_BYTES"
+                url="https://rusky1978-lang.github.io/GarminStudio/Garmin%20Screen%20Studio%20v1.1.zip"
+                sparkle:edSignature="l0yvqhrKrYU7rzTGaT3MmQJbyLm93zWYWv3/ZPjyeYNy4UQZwvHnWDOWfa2drQJK1CHJ+AGg8xdYwZXYbNGVDQ=="
+                length="17800148"
                 type="application/octet-stream" />
         </item>
-        -->
     </channel>
 </rss>

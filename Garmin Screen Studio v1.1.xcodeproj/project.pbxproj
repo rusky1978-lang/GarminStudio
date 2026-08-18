@@ -37,38 +37,9 @@
 		CECB1333300F301500096CA4 /* libmtp.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmtp.9.dylib; path = Frameworks/libmtp.9.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		CE876C11301D348700C94B23 /* Exceptions for "Garmin Screen Studio v1.1" folder in "Garmin Screen Studio v1.1" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				libs/libavcodec.62.28.102.dylib,
-				libs/libavdevice.62.3.102.dylib,
-				libs/libavfilter.11.14.102.dylib,
-				libs/libavformat.62.12.102.dylib,
-				libs/libavutil.60.26.102.dylib,
-				libs/libcrypto.3.dylib,
-				libs/libdav1d.7.dylib,
-				libs/libmp3lame.0.dylib,
-				libs/libopus.0.dylib,
-				libs/libssl.3.dylib,
-				libs/libSvtAv1Enc.4.1.0.dylib,
-				libs/libswresample.6.3.102.dylib,
-				libs/libswscale.9.5.102.dylib,
-				libs/libvmaf.3.dylib,
-				libs/libvpx.12.dylib,
-				libs/libx264.165.dylib,
-				libs/libx265.216.dylib,
-			);
-			target = CE63FE252FFCB07900508C3D /* Garmin Screen Studio v1.1 */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CE63FE282FFCB07900508C3D /* Garmin Screen Studio v1.1 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				CE876C11301D348700C94B23 /* Exceptions for "Garmin Screen Studio v1.1" folder in "Garmin Screen Studio v1.1" target */,
-			);
 			path = "Garmin Screen Studio v1.1";
 			sourceTree = "<group>";
 		};
@@ -363,7 +334,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -377,6 +348,7 @@
 				"EXCLUDED_ARCHS[sdk=*]" = x86_64;
 				GENERATE_INFOPLIST_FILE = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/opt/libmtp/lib;
+				INFOPLIST_FILE = "Garmin-Screen-Studio-v1-1-Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -463,7 +435,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -477,6 +449,7 @@
 				"EXCLUDED_ARCHS[sdk=*]" = x86_64;
 				GENERATE_INFOPLIST_FILE = YES;
 				"HEADER_SEARCH_PATHS[arch=*]" = /opt/homebrew/opt/libmtp/lib;
+				INFOPLIST_FILE = "Garmin-Screen-Studio-v1-1-Info.plist";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

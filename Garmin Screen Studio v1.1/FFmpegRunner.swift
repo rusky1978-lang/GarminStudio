@@ -2,7 +2,9 @@ import Foundation
 
 class FFmpegRunner {
 
-    private let ffmpegPath = "/opt/homebrew/Cellar/ffmpeg/8.1.2_1/bin/ffmpeg"
+    static var ffmpegPath: String {
+        Bundle.main.path(forResource: "ffmpeg", ofType: nil) ?? "ffmpeg"
+    }
 
     /// Runs ffmpeg and reports back via `completion` once the process has
     /// actually terminated (success/failure), instead of returning immediately.
@@ -11,7 +13,7 @@ class FFmpegRunner {
 
         let process = Process()
 
-        process.executableURL = URL(fileURLWithPath: ffmpegPath)
+        process.executableURL = URL(fileURLWithPath: Self.ffmpegPath)
 
         // Tell FFmpeg to look for the BMP files in the Garmin folder
         process.currentDirectoryURL = folder
@@ -43,9 +45,9 @@ class FFmpegRunner {
             let success = process.terminationStatus == 0
 
             if success {
-                print("✅ Video created")
+                print("Video created")
             } else {
-                print("❌ FFmpeg failed")
+                print("FFmpeg failed")
             }
 
             DispatchQueue.main.async {
@@ -63,4 +65,3 @@ class FFmpegRunner {
         }
     }
 }
-

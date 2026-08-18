@@ -6,8 +6,8 @@
         <language>en</language>
 
         <item>
-            <title>Garmin Screen Studio v1.1 Build 2</title>
-            <sparkle:version>2</sparkle:version>
+            <title>Garmin Screen Studio v1.1 Build 3</title>
+            <sparkle:version>3</sparkle:version>
             <sparkle:shortVersionString>1.1</sparkle:shortVersionString>
             <description><![CDATA[
                 <h2>Changes</h2>
@@ -15,11 +15,11 @@
                     <li>Adds support for macOS Light and Dark Mode.</li>
                 </ul>
             ]]></description>
-            <pubDate>Tue, 18 Aug 2026 16:45:00 +0100</pubDate>
+            <pubDate>Tue, 18 Aug 2026 17:25:00 +0100</pubDate>
             <enclosure
                 url="https://rusky1978-lang.github.io/GarminStudio/Garmin%20Screen%20Studio%20v1.1.zip"
-                sparkle:edSignature="l0yvqhrKrYU7rzTGaT3MmQJbyLm93zWYWv3/ZPjyeYNy4UQZwvHnWDOWfa2drQJK1CHJ+AGg8xdYwZXYbNGVDQ=="
-                length="17800148"
+                sparkle:edSignature="3nt2MQ9GLmMcWWOdwf2VKoOrPMDd1DVFrypz9N8kWl2x7tqmi6YFqcGCtgEi+8Q5m3w6xol3Ie0uciU5uW1RCQ=="
+                length="17782457"
                 type="application/octet-stream" />
         </item>
     </channel>

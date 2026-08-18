@@ -6,7 +6,12 @@ import UniformTypeIdentifiers
 // MARK: - Palette
 
 extension Color {
-    static let panelBackground = Color(nsColor: .windowBackgroundColor)
+    static let panelBackground = Color(nsColor: NSColor(name: nil) { appearance in
+        let bestMatch = appearance.bestMatch(from: [.aqua, .darkAqua])
+        return bestMatch == .darkAqua
+            ? .windowBackgroundColor
+            : NSColor(red: 0.92, green: 0.97, blue: 1.0, alpha: 1.0)
+    })
     static let sidebarBackground = Color(nsColor: .controlBackgroundColor)
     static let cardBackground = Color(nsColor: .underPageBackgroundColor)
     static let cardBorder = Color(nsColor: .separatorColor).opacity(0.45)

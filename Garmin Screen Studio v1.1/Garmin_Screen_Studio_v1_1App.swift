@@ -79,6 +79,7 @@ struct Garmin_Screen_Studio_v1_1App: App {
     private let sparkleConfiguration: SparkleProductionConfiguration
     private let updaterController: SPUStandardUpdaterController
     private let hasUpdateFeed: Bool
+    private let updateChecker: UpdateChecker
 
     init() {
         let sparkleConfiguration = SparkleProductionConfiguration()
@@ -89,13 +90,17 @@ struct Garmin_Screen_Studio_v1_1App: App {
             updaterDelegate: sparkleConfiguration,
             userDriverDelegate: nil
         )
+        updateChecker = UpdateChecker(
+            updater: updaterController.updater,
+            hasUpdateFeed: hasUpdateFeed
+        )
     }
 
     var body: some Scene {
 
         WindowGroup {
 
-            ContentView()
+            ContentView(updateChecker: updateChecker)
 
         }
         .commands {
@@ -113,18 +118,22 @@ struct Garmin_Screen_Studio_v1_1App: App {
 
         Settings {
 
-            VStack(spacing: 20) {
+            VStack(spacing: 16) {
+
+                AppIdentityMark(size: 64)
 
                 Text("Garmin Screen Studio")
-                    .font(.title)
-                    .bold()
+                    .font(.title2.weight(.semibold))
 
-                Text("Settings coming soon…")
+                Text("Preferences and app information are available from the Settings section in the main window.")
+                    .font(.callout)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
 
             }
             .padding(40)
-            .frame(width: 350)
+            .frame(width: 360)
 
         }
 
@@ -132,8 +141,11 @@ struct Garmin_Screen_Studio_v1_1App: App {
 
     private func showAboutPanel() {
 
+        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.1"
+        let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
+
         let credits = NSMutableAttributedString(
-            string: "Import and convert Garmin Edge screen recordings.\n\nBuilt by Cycling with Russ\n",
+            string: "Import Garmin screen recordings and turn them into videos.\n\nCreated by Russell Gosling\nCycling with Russ\n\nBeta Software\n",
             attributes: [
                 .font: NSFont.systemFont(ofSize: 12),
                 .foregroundColor: NSColor.secondaryLabelColor
@@ -161,7 +173,7 @@ struct Garmin_Screen_Studio_v1_1App: App {
 
         NSApp.orderFrontStandardAboutPanel(options: [
             .applicationName: "Garmin Screen Studio",
-            .applicationVersion: "1.1",
+            .applicationVersion: "Version \(appVersion) (Build \(buildNumber))",
             .credits: credits,
             .applicationIcon: NSApp.applicationIconImage ?? NSImage()
         ])

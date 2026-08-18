@@ -6,20 +6,23 @@
         <language>en</language>
 
         <item>
-            <title>Garmin Screen Studio v1.1 Build 4</title>
-            <sparkle:version>4</sparkle:version>
+            <title>Garmin Screen Studio v1.1 Build 5</title>
+            <sparkle:version>5</sparkle:version>
             <sparkle:shortVersionString>1.1</sparkle:shortVersionString>
             <description><![CDATA[
                 <h2>Changes</h2>
                 <ul>
-                    <li>Adds a pale blue background in Light Mode.</li>
+                    <li>Introduces the refreshed Garmin Screen Studio interface.</li>
+                    <li>Adds the new Focus app icon and polished app identity.</li>
+                    <li>Improves the beta activation, conversion, diagnostics, updates, and settings screens.</li>
+                    <li>Refines light and dark mode presentation across the app.</li>
                 </ul>
             ]]></description>
-            <pubDate>Tue, 18 Aug 2026 17:35:00 +0100</pubDate>
+            <pubDate>Tue, 18 Aug 2026 21:12:00 +0100</pubDate>
             <enclosure
                 url="https://rusky1978-lang.github.io/GarminStudio/Garmin%20Screen%20Studio%20v1.1.zip"
-                sparkle:edSignature="gyEgOjgreloB+BjIfPCFG2R5Y9Nk6MRBc4EeLOKp5B2jaKIagxIE6QjTeLW8Veuj99eEdkNIyVvVoqnSsyLHCw=="
-                length="17784531"
+                sparkle:edSignature="tkgC3Ldvp2/6OQ+jwm5kshdg0QeiZ5ZuEX6c3Jpo4ecGHSp8LRHaR5r+vXng0ytd/tdcW98vrNZy9yrgiLHvCQ=="
+                length="20158732"
                 type="application/octet-stream" />
         </item>
     </channel>

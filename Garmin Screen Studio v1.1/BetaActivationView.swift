@@ -8,6 +8,7 @@ struct BetaActivationView: View {
     @State private var errorMessage: String?
     @State private var isActivating = false
     @FocusState private var codeFieldFocused: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private let validator = BetaCodeValidator()
 
@@ -20,123 +21,139 @@ struct BetaActivationView: View {
             Color.panelBackground
                 .ignoresSafeArea()
 
-            VStack(spacing: 28) {
-                brandHeader
-
-                VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(betaAccess.isExpired ? "Beta Access Expired" : "Activate Beta Access")
-                            .font(.system(size: 28, weight: .bold))
-
-                        Text(betaAccess.isExpired ? expiredMessage : betaMessage)
-                            .font(.system(size: 14))
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("BETA ACCESS CODE")
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(.secondary)
-                            .tracking(0.6)
-
-                        TextField("Enter beta access code", text: $accessCode)
-                            .textFieldStyle(.plain)
-                            .font(.system(size: 15, weight: .medium, design: .monospaced))
-                            .focused($codeFieldFocused)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 12)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .fill(Color.sidebarBackground)
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .strokeBorder(errorMessage == nil ? Color.cardBorder : Color.red.opacity(0.7))
-                            )
-                            .disabled(isActivating)
-                            .onSubmit(activateBeta)
-                    }
-
-                    if let errorMessage {
-                        HStack(spacing: 8) {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(.red)
-                            Text(errorMessage)
-                                .font(.caption)
-                                .foregroundStyle(.red.opacity(0.95))
-                        }
-                    }
-
-                    Button(action: activateBeta) {
-                        HStack(spacing: 8) {
-                            if isActivating {
-                                ProgressView()
-                                    .controlSize(.small)
-                            } else {
-                                Image(systemName: "checkmark.seal.fill")
-                            }
-
-                            Text(isActivating ? "Activating…" : "Activate Beta")
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.blue)
-                    .controlSize(.large)
-                    .disabled(trimmedCode.isEmpty || isActivating)
-
-                    Text("Your beta access lasts 90 days from activation and is tied to this Mac.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(28)
-                .frame(width: 460)
-                .background(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(Color.cardBackground)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .strokeBorder(Color.cardBorder)
-                )
+            VStack(spacing: 24) {
+                activationCard
+                supportingBadges
             }
+            .padding(40)
         }
         .onAppear {
             codeFieldFocused = true
         }
     }
 
-    private var brandHeader: some View {
-        HStack(spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .strokeBorder(Color.brandStroke, lineWidth: 1.5)
-                    .frame(width: 48, height: 48)
+    private var activationCard: some View {
+        VStack(spacing: 24) {
+            VStack(spacing: 12) {
+                AppIdentityMark(size: 78)
+                    .shadow(color: Color.black.opacity(0.16), radius: 16, y: 8)
 
-                Image(systemName: "play.fill")
-                    .font(.system(size: 16))
-                    .foregroundStyle(Color.brandIcon)
+                VStack(spacing: 4) {
+                    Text("Garmin Screen Studio")
+                        .font(.system(size: 28, weight: .bold))
+                    Text("Beta Access")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
             }
 
-            VStack(alignment: .leading, spacing: 1) {
-                Text("Garmin")
-                    .font(.system(size: 14, weight: .semibold))
-                Text("Screen Studio")
-                    .font(.system(size: 14, weight: .semibold))
-                Text("Beta")
-                    .font(.caption2)
+            VStack(alignment: .leading, spacing: 18) {
+                Text(betaAccess.isExpired ? expiredMessage : betaMessage)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Beta Key")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+
+                    TextField("Enter beta access key", text: $accessCode)
+                        .textFieldStyle(.plain)
+                        .font(.system(size: 15, weight: .medium, design: .monospaced))
+                        .focused($codeFieldFocused)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .fill(Color.elevatedCardBackground)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .strokeBorder(errorMessage == nil ? Color.cardBorder : Color.red.opacity(0.7), lineWidth: errorMessage == nil ? 1 : 1.4)
+                        )
+                        .disabled(isActivating)
+                        .onSubmit(activateBeta)
+                        .accessibilityLabel("Beta access key")
+                }
+
+                statusMessage
+
+                Button(action: activateBeta) {
+                    HStack(spacing: 8) {
+                        if isActivating {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Image(systemName: "checkmark.seal.fill")
+                        }
+
+                        Text(isActivating ? "Activating…" : "Activate")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+                .controlSize(.large)
+                .disabled(trimmedCode.isEmpty || isActivating)
+            }
+        }
+        .padding(30)
+        .frame(width: 470)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color.elevatedCardBackground)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .strokeBorder(Color.cardBorder)
+        )
+        .shadow(color: Color.black.opacity(0.10), radius: 22, y: 12)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: isActivating)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: errorMessage)
+    }
+
+    @ViewBuilder
+    private var statusMessage: some View {
+        if isActivating {
+            HStack(spacing: 8) {
+                Image(systemName: "lock.shield")
+                    .foregroundStyle(.blue)
+                Text("Validating your beta access…")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            .transition(.opacity)
+        } else if let errorMessage {
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.red)
+                Text(errorMessage)
+                    .font(.caption)
+                    .foregroundStyle(.red.opacity(0.95))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .transition(.opacity)
         }
     }
 
+    private var supportingBadges: some View {
+        HStack(spacing: 12) {
+            Label("90-day beta access", systemImage: "calendar")
+            Label("Secure online validation", systemImage: "lock.shield")
+        }
+        .font(.caption.weight(.medium))
+        .foregroundStyle(.secondary)
+    }
+
     private var betaMessage: String {
-        "Thanks for helping test Garmin Screen Studio. Enter your beta access code below to get started."
+        "Enter the beta access key you received to activate this Mac."
     }
 
     private var expiredMessage: String {
-        "Your 90-day beta access has ended. Please contact us if you've been invited to continue testing."
+        "Your 90-day beta access has ended. Enter a new beta access key if you have been invited to continue testing."
     }
 
     private func activateBeta() {
